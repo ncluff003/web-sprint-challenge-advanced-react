@@ -49,7 +49,7 @@ export default class AppClass extends React.Component {
 
   reset = () => {
     // Use this helper to reset all states to their initial values.
-    this.setState(initialState);
+    return this.setState(initialState);
   };
 
   getNextIndex = (direction) => {
@@ -103,10 +103,6 @@ export default class AppClass extends React.Component {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
 
-    if (/[^@]+@[^@]/.test(this.state.email) === false && this.state.email !== "") {
-      return this.setState({ ...this.state.values, ["message"]: "Ouch: email must be a vaild email" });
-    }
-
     const { x, y } = this.getXY();
     try {
       const response = await axios({
@@ -119,9 +115,9 @@ export default class AppClass extends React.Component {
           email: this.state.email,
         },
       });
-      this.setState({ ...this.state, ["message"]: response.data.message });
+      this.setState({ ...this.state, ["message"]: response.data.message, ["email"]: initialEmail });
     } catch (error) {
-      this.setState({ ...this.state, ["message"]: "Ouch: email is required" });
+      this.setState({ ...this.state, ["message"]: error.response.data.message });
     }
   };
 
@@ -161,7 +157,7 @@ export default class AppClass extends React.Component {
           </button>
         </div>
         <form>
-          <input id="email" type="email" placeholder="type email" onChange={(e) => this.onChange(e)}></input>
+          <input id="email" type="email" placeholder="type email" value={this.state.email} onChange={(e) => this.onChange(e)}></input>
           <input id="submit" type="submit" onClick={(e) => this.onSubmit(e)}></input>
         </form>
       </div>

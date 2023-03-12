@@ -102,10 +102,6 @@ export default function AppFunctional(props) {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
 
-    if (/[^@]+@[^@]/.test(values.email) === false && values.email !== "") {
-      return setValues({ ...values, ["message"]: "Ouch: email must be a vaild email" });
-    }
-
     const { x, y } = getXY();
     try {
       const response = await axios({
@@ -118,9 +114,9 @@ export default function AppFunctional(props) {
           email: values.email,
         },
       });
-      setValues({ ...values, ["message"]: response.data.message });
+      setValues({ ...values, ["message"]: response.data.message, ["email"]: initialEmail });
     } catch (error) {
-      setValues({ ...values, ["message"]: "Ouch: email is required" });
+      setValues({ ...values, ["message"]: error.response.data.message });
     }
   }
 
